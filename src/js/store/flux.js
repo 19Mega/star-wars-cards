@@ -3,7 +3,7 @@ import { object } from "prop-types"
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			
+			film: {},
 			// EMPIEZA DESDE >> vehicles: [{...},{...},{...},{...}]
 			favoritos: [],
 			peoples: [],
@@ -140,37 +140,65 @@ const getState = ({ getStore, getActions, setStore }) => {
 		  
 		// EMPIEZA DESDE >> 141 a 170  FILMS >>> KAROL
 		obtenerPeliculas: async () => {
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			const url = 'https://swapi.dev/api/films';
+			try {
+			  const response = await fetch(url);
+			  const data = await response.json();
+				console.log(data)
+				data.results.map((item, index)=>{
+					const id = index+1
+					return setStore({...getStore(),films:[...getStore().films,{...item,id:id}]})
+				})
+			} catch (error) {
+			  console.error('Ocurrió un error:', error);
+			}
 		},
-		// EMPIEZA DESDE >> 171 a 200  STARSHIPS >>> YOSELIN
+
+		obtenerPeliculaIndividual: async (id) => {
+			const url = 'https://swapi.dev/api/films/';
+			console.log(id)
+			try {
+			  const response = await fetch(url+id);
+			  const data = await response.json();
+				console.log(data)	
+			  setStore({ film: data });
+			} catch (error) {
+			  console.error('Ocurrió un error:', error);
+			}
+			
+		},
+
+        // EMPIEZA DESDE >> 171 a 200  STARSHIPS >>> YOSELIN
 		obtenerNaves: async () => {
+			try {
+				const resp = await fetch("https://swapi.dev/api/starships");
+				const data = await resp.json();
+				const store = getStore();
+				if (data) {
+					data.results.map((item, index) => {
+						const uid = index + 1;
+						return setStore({ ...store, starships: [...store.starships, { ...item, uid: uid }] });
+					});
+				}
+				console.log(store);
+			} catch (error) {
+				console.error("Error al obtener las naves:", error);
+			}
+		},
+
+		TraerInfo: async (uid, tipo) => {
+			console.log(`Estas buscando la api aca https://swapi.dev/api/${tipo}/${uid}`);
+			try {
+				const resp = await fetch(`https://swapi.dev/api/${tipo}/${uid}`);
+				const data = await resp.json();
+				console.log(data);
+				setStore({ ...getStore(), PageInfo: data });
+			} catch (error) {
+				console.log(error);
+			}
+	
+
+
 
 
 
